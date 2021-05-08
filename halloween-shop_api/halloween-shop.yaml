@@ -4,7 +4,7 @@ info:
   description: |-
     API documentation to describe the Halloween Shop API.
 
-    This API can be accessed after Authenticating with a valid username and password using the `/login` endpoint.
+    This API can be accessed after authenticating with a valid username and password using the `/login` endpoint.
   contact:
     name: Jahnavi
   version: "1.0"
@@ -63,6 +63,44 @@ paths:
                       \ and password"
                     code: error01
       security: []
+  /refresh:
+    post:
+      tags:
+      - Auth
+      summary: Refresh access token
+      description: |-
+        Obtain a new access token by providing a valid `refresh_token` as the bearer token within the 30 day expiry.
+
+        If the `refresh_token` has expired then you will receive a `401` unauthorized response.
+      operationId: post-refresh
+      parameters: []
+      responses:
+        "200":
+          description: New auth response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/loginResponse'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "401":
+          description: Expired
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              examples:
+                Expired:
+                  value:
+                    message: "Refresh token has expired, please try with a valid refresh\
+                      \ token"
+                    code: error02
+      security:
+      - Refresh: []
 components:
   schemas:
     loginResponse:
@@ -117,4 +155,7 @@ components:
     Authorization:
       type: http
       description: Access token from /login endpoint
+      scheme: bearer
+    Refresh:
+      type: http
       scheme: bearer
