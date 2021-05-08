@@ -1,0 +1,120 @@
+openapi: 3.0.0
+info:
+  title: halloween-shop-api
+  description: |-
+    API documentation to describe the Halloween Shop API.
+
+    This API can be accessed after Authenticating with a valid username and password using the `/login` endpoint.
+  contact:
+    name: Jahnavi
+  version: "1.0"
+servers:
+- url: https://freddy.codesubmit.io
+security:
+- Authorization: []
+tags:
+- name: Auth
+paths:
+  /login:
+    post:
+      tags:
+      - Auth
+      summary: Login
+      description: "Login will create a JWT `access_token` which can be used as a\
+        \ bearer token to access other services on the Halloween API, this token will\
+        \ expire after 15 minutes.\nThe response will include a `refresh_token`that\
+        \ can be used to obtain a new `access_token` as required and is valid for\
+        \ 30 days after issuance."
+      operationId: login
+      requestBody:
+        description: Provide your username and password
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/body'
+      responses:
+        "200":
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/loginResponse'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              examples:
+                Bad request:
+                  value:
+                    message: Invalid request
+                    code: error02
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              examples:
+                Aunauthorized credentials:
+                  value:
+                    message: "Unauthorized credentials, please use a valid username\
+                      \ and password"
+                    code: error01
+      security: []
+components:
+  schemas:
+    loginResponse:
+      title: loginResponse
+      required:
+      - access_token
+      - expires_in
+      - refresh_token
+      - token_type
+      type: object
+      properties:
+        access_token:
+          type: string
+        refresh_token:
+          type: string
+        expires_in:
+          type: number
+          readOnly: true
+          example: 900
+          default: 900
+        token_type:
+          type: string
+          readOnly: true
+          example: Bearer
+          default: Bearer
+    errorResponse:
+      title: errorResponse
+      type: object
+      properties:
+        message:
+          type: string
+          example: Error message
+        code:
+          type: string
+          example: error01
+    body:
+      required:
+      - password
+      - username
+      type: object
+      properties:
+        username:
+          type: string
+          description: username for login
+          example: freddy
+        password:
+          type: string
+          description: password to login
+          format: password
+          example: ElmStreet2019
+  securitySchemes:
+    Authorization:
+      type: http
+      description: Access token from /login endpoint
+      scheme: bearer
