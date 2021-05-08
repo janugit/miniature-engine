@@ -116,6 +116,52 @@ paths:
                     code: error02
       security:
       - Refresh: []
+  /orders:
+    get:
+      tags:
+      - Data
+      summary: Your GET endpoint
+      description: "Returns a list of orders in the system, the results are displayed\
+        \ by a page of 10 Orders. The total number of Orders are returned.\n\nPagination\
+        \ can be achieved using the `page` query parameter.\nSearching on a specific\
+        \ term can be achieved using the `q` parameter."
+      operationId: get-orders
+      parameters:
+      - name: page
+        in: query
+        description: Page to display
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+      - name: q
+        in: query
+        description: Search term to filer results
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/orderPage'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
 components:
   schemas:
     loginResponse:
@@ -167,6 +213,49 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/dashboardData_best_sellers'
+    orderData:
+      title: orderData
+      required:
+      - date
+      - price
+      - product_name
+      - status
+      type: object
+      properties:
+        product_name:
+          type: string
+          example: Item 1
+        date:
+          type: string
+          format: date-time
+          example: 2021-05-07T13:58:45Z
+        price:
+          type: number
+        status:
+          type: string
+          example: Processing
+          enum:
+          - Processing
+          - Shipped
+          - Delivered
+      description: response of an order
+    orderPage:
+      title: orderPage
+      required:
+      - orderData
+      - page
+      - pageTotal
+      type: object
+      properties:
+        page:
+          type: number
+        pageTotal:
+          type: number
+        orderData:
+          maxItems: 10
+          type: array
+          items:
+            $ref: '#/components/schemas/orderData'
     body:
       required:
       - password
