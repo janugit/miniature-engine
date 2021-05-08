@@ -69,7 +69,8 @@ paths:
       tags:
       - Data
       summary: Retrieve Dashboard Data
-      description: Retrieve data to display the dashboard for the authenticated user.
+      description: Retrieve data to display in the dashboard for the authenticated
+        user.
       operationId: get-dashboard
       responses:
         "200":
@@ -83,10 +84,9 @@ paths:
       tags:
       - Auth
       summary: Refresh access token
-      description: |-
-        Obtain a new access token by providing a valid `refresh_token` as the bearer token within the 30 day expiry.
-
-        If the `refresh_token` has expired then you will receive a `401` unauthorized response.
+      description: "Obtain a new access token by providing a valid `refresh_token`\
+        \ as the bearer token within the 30 day expiry.\n\nIf the `refresh_token`\
+        \ has expired, you will receive a `401` unauthorized response."
       operationId: post-refresh
       parameters: []
       responses:
@@ -121,10 +121,9 @@ paths:
       tags:
       - Data
       summary: Your GET endpoint
-      description: "Returns a list of orders in the system, the results are displayed\
-        \ by a page of 10 Orders. The total number of Orders are returned.\n\nPagination\
-        \ can be achieved using the `page` query parameter.\nSearching on a specific\
-        \ term can be achieved using the `q` parameter."
+      description: "Returns a list of orders in the system, each page contains 10\
+        \ orders.\n\nPagination can be achieved using the `page` query parameter.\n\
+        Searching on a specific term can be achieved using the `q` parameter."
       operationId: get-orders
       parameters:
       - name: page
